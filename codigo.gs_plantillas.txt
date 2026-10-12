@@ -1,0 +1,230 @@
+const SHEET_NAME = 'Plantillas';
+const HEADERS = ['Codigo', 'Categoria', 'Titulo', 'CuandoUtilizar', 'Nota'];
+const CATEGORIES_PROPERTY = 'PLANTILLAS_CATEGORIES';
+
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('index')
+    .setTitle('PLANTILLAS Gestión de Tickets')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+function getSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('Vincula este proyecto a una hoja de cálculo de Google Sheets.');
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+  if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
+  return sheet;
+}
+
+function getTemplates(defaultTemplates) {
+  const sheet = getSheet_();
+  if (sheet.getLastRow() <= 1 && Array.isArray(defaultTemplates) && defaultTemplates.length) {
+    const rows = defaultTemplates.map(t => [
+      String(t.code || ''), String(t.cat || ''), String(t.title || ''),
+      String(t.cuando || ''), String(t.nota || '')
+    ]);
+    if (rows.length) sheet.getRange(2, 1, rows.length, HEADERS.length).setValues(rows);
+  }
+  const lastRow = sheet.getLastRow();
+  if (lastRow <= 1) return [];
+  return sheet.getRange(2, 1, lastRow - 1, HEADERS.length).getDisplayValues()
+    .filter(r => r[0])
+    .map(r => ({code:r[0], cat:r[1], title:r[2], cuando:r[3], nota:r[4]}));
+}
+
+function configurarClaveAdministrador() {
+  const claveNueva = 'CAMBIA-ESTA-CLAVE-ANTES-DE-EJECUTAR';
+  if (claveNueva === 'CAMBIA-ESTA-CLAVE-ANTES-DE-EJECUTAR') {
+    throw new Error('Edita configurarClaveAdministrador() y escribe una contraseña privada antes de ejecutar.');
+  }
+  PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD', claveNueva);
+}
+
+function loginAdmin(username, password) {
+  const savedPassword = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD');
+  if (!savedPassword) throw new Error('Primero configura la contraseña ejecutando configurarClaveAdministrador().');
+  return {ok: String(username || '').trim().toLowerCase() === 'admin' && String(password || '') === savedPassword};
+}
+
+function requireAdmin_(token) {
+  const cache = CacheService.getScriptCache();
+  if (!token || cache.get('admin:' + token) !== 'ok') throw new Error('No autorizado.');
+}
+
+function createAdminSession(username, password) {
+  const result = loginAdmin(username, password);
+  if (!result.ok) return {ok:false};
+  const token = Utilities.getUuid();
+  CacheService.getScriptCache().put('admin:' + token, 'ok', 21600);
+  return {ok:true, token:token};
+}
+
+function getCategories(defaultCategories) {
+  const props = PropertiesService.getScriptProperties();
+  let saved = props.getProperty(CATEGORIES_PROPERTY);
+  let categories;
+  if (saved) {
+    try { categories = JSON.parse(saved); } catch (e) { categories = []; }
+  } else {
+    categories = Array.isArray(defaultCategories) ? defaultCategories.slice() : [];
+    props.setProperty(CATEGORIES_PROPERTY, JSON.stringify(categories));
+  }
+  const sheet = getSheet_();
+  if (sheet.getLastRow() > 1) {
+    const fromRows = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1).getDisplayValues().flat();
+    fromRows.forEach(c => { if (c && !categories.some(x => x.toLowerCase() === c.toLowerCase())) categories.push(c); });
+  }
+  return categories;
+}
+
+function saveCategory(name, token) {
+  requireAdmin_(token);
+  name = String(name || '').trim().replace(/\s+/g, ' ');
+  if (!name) throw new Error('Escribe el nombre de la categoría.');
+  const props = PropertiesService.getScriptProperties();
+  const current = getCategories([]);
+  if (current.some(c => c.toLowerCase() === name.toLowerCase())) throw new Error('Ya existe una categoría con ese nombre.');
+  current.push(name);
+  props.setProperty(CATEGORIES_PROPERTY, JSON.stringify(current));
+  return current;
+}
+
+function renameCategory(oldName, newName, token) {
+  requireAdmin_(token);
+  oldName = String(oldName || '').trim();
+  newName = String(newName || '').trim().replace(/\s+/g, ' ');
+  if (!oldName || !newName) throw new Error('El nombre de la categoría no puede quedar vacío.');
+  if (oldName.toLowerCase() === newName.toLowerCase() && oldName === newName) return getCategories([]);
+
+  const current = getCategories([]);
+  if (!current.some(c => c.toLowerCase() === oldName.toLowerCase())) {
+    throw new Error('No se encontró la categoría que quieres editar.');
+  }
+  if (current.some(c => c.toLowerCase() === newName.toLowerCase() && c.toLowerCase() !== oldName.toLowerCase())) {
+    throw new Error('Ya existe una categoría con ese nombre.');
+  }
+
+  // Actualiza también las plantillas asociadas, conservando sus códigos actuales.
+  const sheet = getSheet_();
+  if (sheet.getLastRow() > 1) {
+    const range = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1);
+    const values = range.getDisplayValues();
+    let changed = false;
+    values.forEach(row => {
+      if (String(row[0]).trim().toLowerCase() === oldName.toLowerCase()) {
+        row[0] = newName;
+        changed = true;
+      }
+    });
+    if (changed) range.setValues(values);
+  }
+
+  const props = PropertiesService.getScriptProperties();
+  const saved = props.getProperty(CATEGORIES_PROPERTY);
+  let categories = saved ? JSON.parse(saved) : current;
+  categories = categories.map(c => String(c).toLowerCase() === oldName.toLowerCase() ? newName : c);
+  if (!categories.some(c => c.toLowerCase() === newName.toLowerCase())) categories.push(newName);
+  // Evita duplicados por mayúsculas/minúsculas.
+  categories = categories.filter((c, i, arr) => arr.findIndex(x => x.toLowerCase() === c.toLowerCase()) === i);
+  props.setProperty(CATEGORIES_PROPERTY, JSON.stringify(categories));
+  return getCategories([]);
+}
+
+function deleteCategory(name, token) {
+  requireAdmin_(token);
+  name = String(name || '').trim();
+  const sheet = getSheet_();
+  if (sheet.getLastRow() > 1) {
+    const cats = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1).getDisplayValues().flat();
+    if (cats.some(c => c.toLowerCase() === name.toLowerCase())) {
+      throw new Error('Esta categoría tiene plantillas asociadas. Cambia primero esas plantillas a otra categoría.');
+    }
+  }
+  const props = PropertiesService.getScriptProperties();
+  const saved = props.getProperty(CATEGORIES_PROPERTY);
+  let current = saved ? JSON.parse(saved) : [];
+  current = current.filter(c => c.toLowerCase() !== name.toLowerCase());
+  props.setProperty(CATEGORIES_PROPERTY, JSON.stringify(current));
+  return current;
+}
+
+function nextCodeForCategory_(category) {
+  const sheet = getSheet_();
+  const lastRow = sheet.getLastRow();
+  const rows = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, 2).getDisplayValues() : [];
+  const categoryRows = rows.filter(r => String(r[1]).toLowerCase() === String(category).toLowerCase());
+  let prefix = '';
+  for (const row of categoryRows) {
+    const match = String(row[0]).trim().toUpperCase().match(/^([A-ZÁÉÍÓÚÜÑ]+)-\d+$/);
+    if (match) { prefix = match[1].normalize('NFD').replace(/[\u0300-\u036f]/g, ''); break; }
+  }
+  if (!prefix) {
+    const words = String(category).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().match(/[A-Z0-9]+/g) || ['CAT'];
+    prefix = (words.length > 1 ? words.map(w => w[0]).join('') : words[0].slice(0, 3)).slice(0, 4);
+  }
+  const re = new RegExp('^' + prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '-(\\d+)$', 'i');
+  let max = 0;
+  rows.forEach(r => { const m = String(r[0]).trim().match(re); if (m) max = Math.max(max, Number(m[1]) || 0); });
+  return prefix + '-' + String(max + 1).padStart(2, '0');
+}
+
+function generateTemplateCode(category, token) {
+  requireAdmin_(token);
+  if (!String(category || '').trim()) throw new Error('Selecciona una categoría.');
+  return nextCodeForCategory_(category);
+}
+
+function saveTemplate(template, editingCode, token) {
+  requireAdmin_(token);
+  if (!template || !template.title || !template.nota || !template.cat) {
+    throw new Error('Categoría, título y nota son obligatorios.');
+  }
+  const sheet = getSheet_();
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const lastRow = sheet.getLastRow();
+    const rows = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, HEADERS.length).getDisplayValues() : [];
+    const oldCode = String(editingCode || '').trim().toUpperCase();
+    const code = oldCode ? String(template.code || oldCode).trim().toUpperCase() : nextCodeForCategory_(template.cat);
+    if (!code) throw new Error('No se pudo generar el código.');
+    const duplicate = rows.findIndex(r => String(r[0]).toUpperCase() === code && (!oldCode || String(r[0]).toUpperCase() !== oldCode));
+    if (duplicate !== -1) throw new Error('Ese código ya existe. Intenta guardar de nuevo para generar otro código.');
+    const values = [code, String(template.cat || ''), String(template.title || ''), String(template.cuando || ''), String(template.nota || '')];
+    if (oldCode) {
+      const index = rows.findIndex(r => String(r[0]).toUpperCase() === oldCode);
+      if (index < 0) throw new Error('No se encontró la plantilla que quieres editar.');
+      sheet.getRange(index + 2, 1, 1, HEADERS.length).setValues([values]);
+    } else {
+      sheet.appendRow(values);
+    }
+    return {ok:true, code:code};
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function deleteTemplate(code, token) {
+  requireAdmin_(token);
+  const sheet = getSheet_();
+  const lastRow = sheet.getLastRow();
+  if (lastRow <= 1) throw new Error('No hay plantillas para eliminar.');
+  const codes = sheet.getRange(2, 1, lastRow - 1, 1).getDisplayValues().flat();
+  const index = codes.findIndex(c => String(c).toUpperCase() === String(code).toUpperCase());
+  if (index < 0) throw new Error('No se encontró esa plantilla.');
+  sheet.deleteRow(index + 2);
+  return {ok:true};
+}
+
+function getGerencia() {
+  return PropertiesService.getScriptProperties().getProperty('NOMBRE_GERENCIA') || 'Gerencia de Soporte Operacional';
+}
+
+function saveGerencia(nombre, token) {
+  requireAdmin_(token);
+  nombre = String(nombre || '').trim();
+  if (!nombre) throw new Error('Escribe el nombre de la gerencia.');
+  PropertiesService.getScriptProperties().setProperty('NOMBRE_GERENCIA', nombre);
+  return {ok:true, nombre:nombre};
+}
