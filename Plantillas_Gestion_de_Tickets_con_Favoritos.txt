@@ -1,0 +1,623 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>PLANTILLAS Gestion DE TICKETS</title><style>
+:root{--bg:#f3f6fb;--surface:#ffffff;--primary:#17365d;--primary-2:#244b78;--accent:#2f6fde;--border:#dce5f0;--muted:#64748b;--danger:#ef4444;--success:#10b981;--shadow:0 8px 24px rgba(23,54,93,.07)}
+*{box-sizing:border-box;font-family:'Roboto', sans-serif!important}
+body{margin:0;background:var(--bg);font-family:'Roboto', sans-serif;font-size:14px;color:#1f2937}
+header{background:linear-gradient(115deg,var(--primary) 0%,var(--primary-2) 100%);color:#fff;padding:7px clamp(12px,2vw,24px);position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;box-shadow:0 5px 18px rgba(15,23,42,.16);border-bottom:3px solid #3b82f6}
+.brand-block{display:flex;align-items:center;gap:13px;min-width:240px}.brand-mark{width:46px;height:46px;flex:0 0 46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:24px;box-shadow:inset 0 1px rgba(255,255,255,.12)}.brand-copy{min-width:0}.brand-eyebrow{margin:0 0 4px;font-size:10px;letter-spacing:1.7px;font-weight:700;text-transform:uppercase;color:#bfdbfe}.brand-block h1{margin:0;font-size:clamp(17px,1.7vw,22px);line-height:1.25;letter-spacing:.15px}.brand-subtitle{margin:5px 0 0;font-size:12px;color:#dbeafe;line-height:1.4;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.header-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;width:100%;margin-left:auto;text-align:right}
+.header-actions>*{margin-left:0}
+@media(min-width:1100px){header{align-items:center;flex-wrap:nowrap}.brand-block{flex:0 1 auto;min-width:0}.header-actions{flex:1 1 auto;width:auto;min-width:0;justify-content:flex-end;flex-wrap:nowrap;gap:6px}.header-actions>.btn-h{padding:7px 9px;font-size:12px}.login-area{padding:6px 7px;gap:5px}.login-area input{width:112px;padding:7px 8px;font-size:12px}.login-area .btn-h{padding:7px 9px;font-size:12px}}
+@media(max-width:1099px){.header-actions{width:100%;justify-content:flex-end;margin-left:auto}}.login-area{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:8px 10px;border-radius:12px}
+.login-area input{padding:9px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;width:132px;min-width:0;background:#fff;color:#1f2937;outline:none}.login-area input:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(147,197,253,.25)}
+.btn-h{padding:10px 13px;border-radius:9px;cursor:pointer;font-weight:700;font-size:13px;color:#fff;border:1px solid rgba(255,255,255,.12);transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;white-space:nowrap}.btn-h:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 5px 12px rgba(15,23,42,.14)}.btn-h:focus-visible,.btn:focus-visible,.cat-btn:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.btn-login{background:var(--success)}.btn-logout{background:var(--danger)}.btn-new{background:var(--success);display:none}
+.admin-badge{display:none;background:#fbbf24;color:#422006;padding:4px 9px;border-radius:999px;font-size:10px;letter-spacing:.5px;font-weight:800;margin-left:8px;vertical-align:middle}
+.admin-badge.active{display:inline-block}.brand-subtitle .admin-badge{margin-left:0;flex:0 0 auto}.is-admin.btn-new{display:inline-block!important}
+.top{max-width:1320px;margin:22px auto 0;padding:0 clamp(16px,3vw,30px);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:260px;padding:13px 16px 13px 44px;border:1px solid #d7e1ed;border-radius:12px;background:#fff;font-size:14px;box-shadow:0 2px 6px rgba(15,23,42,.025);outline:none;transition:border-color .18s ease,box-shadow .18s ease;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:15px center}.search:focus{border-color:#60a5fa;box-shadow:0 0 0 4px rgba(47,111,222,.12)}
+.gestor-global{display:flex;gap:9px;align-items:center;background:#fff;border:1px solid #d7e1ed;border-radius:12px;padding:8px 12px;box-shadow:0 2px 6px rgba(15,23,42,.025)}.gestor-global label{font-size:12px!important}.gestor-global input{border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;width:190px;font-size:13px;outline:none}.gestor-global input:focus{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(47,111,222,.1)}
+#count{font-size:12px!important;color:var(--muted)!important;font-weight:700;background:#eaf0f8;padding:8px 11px;border-radius:9px;white-space:nowrap}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin:16px auto 8px;max-width:1320px;padding:0 clamp(16px,3vw,30px)}
+.cat-btn{padding:8px 14px;border-radius:9px;border:1px solid #dbe4ef;background:#fff;color:#475569;font-size:12px;cursor:pointer;font-weight:700;transition:all .16s ease}.cat-btn:hover{border-color:#93b4df;color:var(--primary);background:#f8fbff}.cat-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 10px rgba(23,54,93,.15)}
+.grid{max-width:1320px;margin:0 auto;padding:18px clamp(16px,3vw,30px) 30px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:18px;align-items:stretch}
+.card{position:relative;background:#fff;border:1px solid #e0e7f0;border-radius:15px;padding:17px;display:flex;flex-direction:column;min-width:0;box-shadow:0 3px 10px rgba(23,54,93,.035);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.card:hover{transform:translateY(-3px);border-color:#c5d5e8;box-shadow:0 12px 25px rgba(23,54,93,.09)}
+.favorite-btn{position:absolute;top:12px;right:12px;width:36px;height:36px;display:grid;place-items:center;border:1px solid #dbe4ef;border-radius:10px;background:#fff;color:#94a3b8;font-size:23px;line-height:1;cursor:pointer;z-index:2;transition:transform .15s ease,background .15s ease,color .15s ease,border-color .15s ease}.favorite-btn:hover{transform:scale(1.07);border-color:#facc15}.favorite-btn.active{background:#fffbeb;color:#eab308;border-color:#facc15}.favorite-btn:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}.badge{background:#edf4ff;color:#214d80;padding:6px 10px;border-radius:7px;font-size:11px;letter-spacing:.2px;font-weight:800;width:fit-content;max-width:100%;overflow-wrap:anywhere;margin-bottom:11px;border:1px solid #dceaff}
+.card h3{margin:0 0 10px;font-size:17px;line-height:1.4;font-weight:700;color:#172b45}
+.cuando{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:8px 10px;margin:0 0 8px}
+.cuando-title{font-size:13px;font-weight:700;color:#92400e;margin-bottom:3px}
+.cuando-text{font-size:13px;color:#78350f;line-height:1.5}
+.fields{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.f-input{padding:6px 8px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;width:180px;background:#fff}
+.note{white-space:pre-wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:13px;line-height:1.6;flex:1;min-height:110px;margin-top:6px}
+.note b{font-weight:700;color:#111827}
+.actions{display:flex;gap:8px;margin-top:13px}
+.btn{flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--border);cursor:pointer;font-weight:700;font-size:13px;transition:filter .15s ease,transform .15s ease}.btn:hover{filter:brightness(.97);transform:translateY(-1px)}
+.btn-primary{background:var(--accent);color:#fff}.btn-danger{background:var(--danger);color:#fff}.btn-warning{background:#f59e0b;color:#fff}
+.toast{position:fixed;right:24px;bottom:24px;display:flex;align-items:center;gap:12px;min-width:280px;max-width:min(440px,calc(100vw - 32px));padding:14px 16px;background:#fff;color:#1f2937;border:1px solid #e2e8f0;border-left:5px solid #2f6fde;border-radius:14px;box-shadow:0 12px 35px rgba(15,23,42,.18);z-index:10000;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .22s ease,transform .22s ease,visibility .22s;pointer-events:none;font-size:14px;line-height:1.45}.toast.show{opacity:1;visibility:visible;transform:translateY(0)}.toast-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:50%;font-size:16px;font-weight:700;background:#dbeafe;color:#1d4ed8}.toast-message{overflow-wrap:anywhere;font-weight:600}.toast.success{border-left-color:#10b981}.toast.success .toast-icon{background:#d1fae5;color:#047857}.toast.error{border-left-color:#ef4444}.toast.error .toast-icon{background:#fee2e2;color:#b91c1c}.toast.warning{border-left-color:#f59e0b}.toast.warning .toast-icon{background:#fef3c7;color:#92400e}.toast.info{border-left-color:#2f6fde}.toast.info .toast-icon{background:#dbeafe;color:#1d4ed8}@media(max-width:520px){.toast{right:12px;bottom:12px;left:12px;min-width:0;max-width:none;width:auto}}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal-overlay.active{display:flex}.modal{background:#fff;border-radius:16px;padding:20px;max-width:600px;width:100%;max-height:92vh;overflow:auto}
+.modal input,.modal textarea,.modal select{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:14px;margin-top:4px}
+.modal label{font-size:14px;font-weight:700;color:var(--primary);display:block;margin:10px 0 4px;text-transform:uppercase}
+
+.loading-overlay{position:fixed;inset:0;background:rgba(15,23,42,.42);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.loading-overlay.active{display:flex}
+.loading-box{background:#fff;border-radius:16px;padding:24px 30px;min-width:230px;max-width:90%;text-align:center;box-shadow:0 18px 55px rgba(0,0,0,.25)}
+.loading-spinner{width:42px;height:42px;border:4px solid #dbeafe;border-top-color:#2f6fde;border-radius:50%;margin:0 auto 14px;animation:loadingSpin .8s linear infinite}
+.loading-message{font-size:15px;font-weight:700;color:#1e3a5f}.loading-detail{font-size:12px;color:#64748b;margin-top:6px}
+@keyframes loadingSpin{to{transform:rotate(360deg)}}
+@media(max-width:900px){header{align-items:flex-start}.header-actions{justify-content:flex-end;width:100%;margin-left:auto}.brand-block{width:100%}.grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}}
+@media(max-width:600px){header{padding:15px 14px}.brand-block{align-items:flex-start;gap:10px}.brand-mark{width:40px;height:40px;flex-basis:40px;font-size:21px;border-radius:11px}.brand-block h1{font-size:17px}.brand-subtitle{font-size:11px}.header-actions{gap:7px}.header-actions>.btn-h{flex:1 1 auto}.login-area{width:100%;flex-wrap:wrap}.login-area input{flex:1;width:90px}.top{margin-top:15px}.search{min-width:100%;width:100%}.gestor-global{flex:1;min-width:0}.gestor-global input{width:100%;min-width:0}.cats{margin-top:12px}.cat-btn{padding:8px 10px}.grid{padding-top:12px;grid-template-columns:minmax(0,1fr);gap:13px}.card{padding:15px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Modo oscuro: solo cambia la apariencia; no modifica datos ni llamadas a Google Sheets. */
+body.dark-mode{--bg:#0b1220;--surface:#111c2e;--primary:#93c5fd;--primary-2:#1e3a5f;--accent:#3b82f6;--border:#334155;--muted:#a8b6ca;--shadow:0 8px 24px rgba(0,0,0,.25);background:var(--bg);color:#e5edf7}
+body.dark-mode .top,body.dark-mode .cats,body.dark-mode .grid{color:#e5edf7}
+body.dark-mode .search,body.dark-mode .gestor-global,body.dark-mode .card,body.dark-mode .modal,body.dark-mode .loading-box,body.dark-mode .toast{background:#111c2e;color:#e5edf7;border-color:#334155}
+body.dark-mode .search{background-color:#111c2e;color:#f1f5f9;border-color:#475569}
+body.dark-mode .gestor-global label{color:#bfdbfe!important}
+body.dark-mode .gestor-global input,body.dark-mode .login-area input,body.dark-mode .f-input,body.dark-mode .modal input,body.dark-mode .modal textarea,body.dark-mode .modal select{background:#0b1220;color:#e5edf7;border-color:#475569}
+body.dark-mode #count{background:#1e293b;color:#cbd5e1!important}
+body.dark-mode .cat-btn{background:#172338;color:#dbeafe;border-color:#334155}
+body.dark-mode .cat-btn:hover{background:#24354d;color:#fff;border-color:#64748b}
+body.dark-mode .cat-btn.active{background:#2563eb;border-color:#3b82f6;color:#fff}
+body.dark-mode .badge{background:#172b49;color:#bfdbfe;border-color:#29476f}
+body.dark-mode .card h3,body.dark-mode .note b{color:#f1f5f9}
+body.dark-mode .cuando{background:#332713;border-color:#78551b;border-left-color:#f59e0b}
+body.dark-mode .cuando-title{color:#fcd34d}body.dark-mode .cuando-text{color:#fde68a}
+body.dark-mode .note{background:#0b1424;color:#dbe5f2;border-color:#334155}
+body.dark-mode .modal label{color:#bfdbfe}
+body.dark-mode .modal p,body.dark-mode .modal small,body.dark-mode .loading-detail{color:#a8b6ca!important}
+body.dark-mode .loading-message{color:#dbeafe}
+body.dark-mode .loading-spinner{border-color:#334155;border-top-color:#60a5fa}
+body.dark-mode .modal-overlay{background:rgba(0,0,0,.72)}
+body.dark-mode .loading-overlay{background:rgba(0,0,0,.65)}
+body.dark-mode .toast-icon{background:#1e3a5f;color:#bfdbfe}
+body.dark-mode .toast.success .toast-icon{background:#064e3b;color:#a7f3d0}
+body.dark-mode .toast.error .toast-icon{background:#7f1d1d;color:#fecaca}
+body.dark-mode .toast.warning .toast-icon{background:#78350f;color:#fde68a}
+body.dark-mode .toast.info .toast-icon{background:#1e3a5f;color:#bfdbfe}
+body.dark-mode .actions .btn:not(.btn-primary):not(.btn-danger):not(.btn-warning),body.dark-mode .modal .btn:not(.btn-primary):not(.btn-danger):not(.btn-warning){background:#1e293b!important;color:#e2e8f0!important;border-color:#475569}
+body.dark-mode .card:hover{border-color:#475569;box-shadow:0 12px 25px rgba(0,0,0,.3)}
+
+
+/* Exportación profesional: visible únicamente en modo administrador */
+.export-bar{display:none;max-width:none;margin:0;padding:0;gap:8px;flex-wrap:wrap;align-items:center}
+body.is-admin .export-bar{display:flex}
+.export-bar .export-label{font-size:12px;font-weight:700;color:var(--muted);margin-right:4px}
+.btn-export{border:0;border-radius:10px;padding:11px 15px;color:#fff;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 10px rgba(15,23,42,.12);transition:transform .15s,filter .15s}
+.btn-export:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.btn-export-word{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.btn-export-pdf{background:linear-gradient(135deg,#dc2626,#991b1b)}
+@media(max-width:600px){.header-actions{justify-content:flex-end}.export-bar{width:auto;flex:0 1 auto;justify-content:flex-end}.btn-export{flex:0 1 auto}.login-area{justify-content:flex-end}}
+
+@media(max-width:600px){header .header-actions{width:100%;justify-content:flex-end!important;margin-left:auto!important}.header-actions>.btn-h{flex:0 0 auto}.header-actions .export-bar{justify-content:flex-end!important;margin-left:auto!important}.header-actions .login-area{margin-left:auto;justify-content:flex-end}}
+</style></head><body>
+<header><div class="brand-block"><div class="brand-mark" aria-hidden="true">📋</div><div class="brand-copy"><p class="brand-eyebrow">GESTIÓN OPERATIVA</p><h1>PLANTILLAS DE GESTIÓN DE TICKETS</h1><p class="brand-subtitle">Biblioteca de respuestas y seguimiento de solicitudes <span id="adminBadge" class="admin-badge">MODO ADMIN</span></p></div></div><div class="header-actions"><button id="btnSignature" class="btn-h btn-new" onclick="editGerencia()" style="background:#7c3aed">✏️ Firma de gerencia</button><div id="exportBar" class="export-bar" aria-label="Exportar biblioteca completa"><button type="button" class="btn-export btn-export-word" onclick="exportAllToWord()">📘 Exportar todas a Word</button><button type="button" class="btn-export btn-export-pdf" onclick="exportAllToPDF()">📄 Exportar todas a PDF</button></div><button id="btnCats" class="btn-h btn-new" onclick="openCategoryManager()" style="background:#64748b">⚙ Categorías</button><button id="btnNew" class="btn-h btn-new" onclick="openModal()">+ Nueva Plantilla</button><button id="themeToggle" class="btn-h" type="button" onclick="toggleTheme()" aria-label="Activar modo oscuro" aria-pressed="false" style="background:#334155">🌙</button><div class="login-area"><input id="adminUser" value="admin" autocomplete="username" aria-label="Usuario administrador"><input id="adminPass" type="password" placeholder="Contraseña" autocomplete="current-password" aria-label="Contraseña"><button id="btnLogin" class="btn-h btn-login" onclick="login()">Ingresar</button><button id="btnLogout" class="btn-h btn-logout" style="display:none" onclick="logout()">Salir</button></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</header>
+<div class="top"><input id="search" class="search" placeholder="Buscar por código, título o contenido…" aria-label="Buscar plantillas"><div class="gestor-global"><span aria-hidden="true">👤</span><label for="globalGestor" style="font-size:10px;font-weight:700;color:var(--primary)">Gestor:</label><input id="globalGestor" placeholder="Nombre del gestor" aria-label="Nombre del gestor"></div><span id="count" aria-live="polite"></span></div>
+<div class="cats" id="cats"></div><div class="grid" id="grid"></div><div class="toast info" id="toast" role="status" aria-live="polite" aria-atomic="true"><span class="toast-icon" id="toastIcon" aria-hidden="true">ℹ</span><span class="toast-message" id="toastMessage"></span></div>
+<div class="modal-overlay" id="modal"><div class="modal"><h2 id="modalTitle" style="font-size:12px">Nueva</h2><label>Codigo</label><input id="mCode"><label>Categoria</label><select id="mCat" onchange="refreshAutoCode()"></select><small style="display:block;color:#64748b;margin-top:4px">El código se asigna automáticamente.</small><label>Titulo</label><input id="mTitle"><label>Cuando utilizar</label><textarea id="mCuando" rows="2"></textarea><label>Nota</label><textarea id="mNota" rows="12"></textarea><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" onclick="saveModal()" style="flex:2">Guardar</button><button class="btn" style="background:#fff" onclick="closeModal()">Cancelar</button></div></div></div>
+<div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite"><div class="loading-box"><div class="loading-spinner"></div><div class="loading-message" id="loadingMessage">Procesando solicitud…</div><div class="loading-detail">Por favor, espera un momento.</div></div></div>
+<div class="modal-overlay" id="categoryModal"><div class="modal"><h2 style="font-size:16px">Administrar categorías</h2><p style="color:#64748b">Agrega categorías nuevas o elimina las que ya no tengan plantillas asociadas.</p><label>Nueva categoría</label><input id="newCategoryName" placeholder="Ej. Mantenimiento de equipos"><button class="btn btn-primary" onclick="addCategory()" style="margin-top:10px">+ Agregar categoría</button><div id="categoryList" style="margin-top:18px"></div><div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn" onclick="closeCategoryManager()">Cerrar</button></div></div></div>
+<script>
+const DEFAULT_CATEGORIES=["Atu - Convocatorias","Solicitudes De Equipo","Reparacion Y Seguimiento","Escalamientos Y Gestion","Cierres","Casos Especiales","Reportes Y Control"];
+const DEFAULT_TEMPLATES=[
+{code:"ATU-01",cat:"Atu - Convocatorias",title:"Convocatoria - Primera vez",cuando:"Cuando el representante aun debe confirmar la fecha de presentacion del dispositivo en la Sede de Enlaces.",nota:`Buen dia.
+
+Favor contactar al representante/padre de familia y solicitar su apoyo para confirmar la fecha en que podria presentarse en la Sede de Enlaces con el dispositivo, a fin de realizar el diagnostico correspondiente y dar continuidad al proceso de soporte.
+
+En caso de no contar con una fecha confirmada, el ticket continuara su flujo establecido y se procedera con el cierre del caso conforme al proceso correspondiente. Una vez que se cuente con una fecha definitiva para la presentacion del dispositivo, podra generarse un nuevo ticket para dar continuidad a la gestion.
+
+Una vez cumplido este flujo, proceder con el cierre del ticket segun corresponda.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ATU-02",cat:"Atu - Convocatorias",title:"No se presenta a la primera convocatoria",cuando:"Cuando el representante no se presento a la primera convocatoria y es necesario gestionar una nueva convocatoria.",nota:`Buen dia.
+
+Se verifico en el sistema y no se encuentra registro de que el representante se haya presentado en la Sede de Enlaces. Por lo anterior, se remite a ATU Convocatoria Hardware para que se realice una nueva convocatoria y se pueda dar continuidad a la gestion.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"EQ-01",cat:"Solicitudes De Equipo",title:"Solicitud de equipo - Estudiante",cuando:"Cuando un estudiante solicita la asignacion de un equipo informatico para realizar sus actividades academicas.",nota:`Buen dia.
+
+Se solicita la asignación de equipo informático para el estudiante, con el fin de apoyar el desarrollo de sus actividades académicas.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"EQ-02",cat:"Solicitudes De Equipo",title:"Solicitud de equipo - Docente",cuando:"Cuando un docente solicita la asignacion de un equipo informatico para realizar sus actividades pedagogicas y administrativas.",nota:`Buen dia.
+
+Se solicita la asignación de equipo informático para el docente, con el fin de apoyar el desarrollo de sus actividades académicas y administrativas.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"EQ-03",cat:"Solicitudes De Equipo",title:"Solicitud de equipo - Nueva entrega",cuando:"Cuando la solicitud corresponde a una nueva entrega de dispositivo y debe ser revisada y gestionada por Tecnologia Hardware Sede.",nota:`Buen dia.
+
+Se informa que el caso ha sido trasladado al area correspondiente (TECNOLOGIA HARDWARE SEDE) para su revision y seguimiento, debido a que corresponde a una solicitud de nueva entrega de dispositivo.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"EQ-04",cat:"Solicitudes De Equipo",title:"Solicitud de equipo - Entregado",cuando:"Cuando en el sistema se observa que una solicitud de equipo ya fue resuelta y se necesita confirmar la entrega antes del cierre.",nota:`Buenas tardes.
+
+Dando seguimiento al ticket, se observa que la solicitud ya fue resuelta en fecha [FECHA].
+
+Agradecemos su apoyo para consultar si efectivamente se realizo la entrega del equipo informatico antes mencionado, con el fin de finalizar el proceso y proceder con el cierre del ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"EQ-05",cat:"Solicitudes De Equipo",title:"Estudiante con entrega previa",cuando:"Cuando el estudiante ya cuenta con un registro de entrega de equipo y es necesario confirmar si la necesidad actual corresponde a una reparacion.",nota:`Buen dia.
+
+Tras la verificacion realizada en el sistema, se confirmo la entrega de un equipo informatico en fecha [FECHA], cuando el estudiante se encontraba cursando [GRADO].
+
+Agradecemos su apoyo para consultar si lo que requiere es la reparacion del equipo informatico antes mencionado, con el fin de dar continuidad al proceso correspondiente.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"EQ-06",cat:"Solicitudes De Equipo",title:"Docente no registrado",cuando:"Cuando se verifica que el docente no se encuentra registrado actualmente y la solicitud requiere revision de Tecnologia Hardware Sede.",nota:`Buen dia.
+
+Se informa que, al verificar en el sistema, el docente no se encuentra registrado actualmente.
+
+Por lo anterior, se deriva a TECNOLOGIA HARDWARE SEDE para su revision y seguimiento, debido a que corresponde a una solicitud de nueva entrega de dispositivo.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-01",cat:"Reparacion Y Seguimiento",title:"Reparacion docente",cuando:"Cuando un docente reporta fallas en el equipo informatico que tiene asignado.",nota:`Buen dia.
+
+El docente reporta fallas en el equipo informatico asignado, lo cual le dificulta realizar sus actividades pedagogicas y administrativas.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-02",cat:"Reparacion Y Seguimiento",title:"Reparacion estudiante",cuando:"Cuando un estudiante reporta fallas en el dispositivo asignado y estas afectan sus actividades academicas.",nota:`Buen dia.
+
+El estudiante reporta fallas en su dispositivo, situacion que dificulta la realizacion de sus actividades academicas.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-03",cat:"Reparacion Y Seguimiento",title:"Reparacion con sustitucion previa",cuando:"Cuando el equipo cuenta con una sustitucion previa y se necesita verificar con Sede de Enlaces si es posible realizar una reparacion segun la disponibilidad de piezas.",nota:`Buen dia.
+
+Se remite el ticket a la Sede de Enlaces para verificar si es posible realizar la reparacion del equipo informatico, de acuerdo con la disponibilidad de las partes en stock para ese equipo.
+
+Una vez realizada dicha verificacion, se solicita remitir el ticket a ATU Convocatoria Hardware, a fin de realizar la convocatoria del representante para que se presente en la sede y se pueda efectuar la reparacion correspondiente.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-04",cat:"Reparacion Y Seguimiento",title:"Equipo en proceso de reparacion",cuando:"Cuando se verifica que el equipo ya se encuentra en proceso de reparacion en la Sede de Enlaces.",nota:`Buen dia.
+
+Se verifico en el sistema y se confirma que el equipo ya se encuentra en reparacion en la Sede de Enlaces, en el ticket #[TICKET].
+
+Por lo anterior, el caso se mantiene en Tecnologia Hardware Sede para continuar con la gestion correspondiente.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-05",cat:"Reparacion Y Seguimiento",title:"Equipo reparado pendiente de entrega",cuando:"Cuando el equipo ya fue reparado en sede, pero aun esta pendiente que el responsable se presente a retirarlo.",nota:`Buen dia.
+
+Dando seguimiento al ticket, se observa que la solicitud ya fue resuelta en sede.
+
+Agradecemos su apoyo para consultar con el responsable la fecha en que puede acercarse a la sede para retirar el dispositivo, con el fin de dar continuidad al proceso correspondiente.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-06",cat:"Reparacion Y Seguimiento",title:"Equipo reparado y entregado",cuando:"Cuando el sistema indica que el inconveniente ya fue resuelto por la sede y se necesita confirmar la solucion antes de cerrar el ticket.",nota:`Buen dia.
+
+Dando seguimiento al ticket, se observa que el inconveniente ya ha sido resuelto por parte de la sede en fecha [FECHA].
+
+Agradecemos amablemente su apoyo para consultar con el responsable si el inconveniente reportado ya fue solucionado, con el fin de dar continuidad al proceso y, de ser asi, proceder con el cierre del ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-07",cat:"Reparacion Y Seguimiento",title:"Verificacion de reparacion",cuando:"Cuando se necesita solicitar a la sede la verificacion de una posible reparacion y documentar en el ticket si no es posible realizarla.",nota:`Buen dia.
+
+Agradecemos su amable apoyo para verificar si es posible realizar la reparacion del equipo informatico.
+
+En caso de que la reparacion no sea posible o no se cuente con las piezas necesarias, agradeceremos dejar constancia en el ticket, indicando el motivo correspondiente, para dar continuidad a la gestion.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-08",cat:"Reparacion Y Seguimiento",title:"Sustitucion previa sin mantenimiento",cuando:"Cuando el equipo cuenta con una sustitucion previa y la sede informa que no puede realizar el mantenimiento o reparacion por falta de piezas.",nota:`Buen dia.
+
+Se verifica en el sistema que al estudiante se le realizo una sustitucion de equipo en [MES/ANO]. Asimismo, de acuerdo con lo indicado por la Sede de Enlaces, el dispositivo presenta nuevamente dano en [COMPONENTE] y actualmente no se cuenta con [PIEZA] disponible para ese modelo.
+
+Por lo anterior, se escala el ticket al area correspondiente para su debida revision y gestion del caso.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-09",cat:"Reparacion Y Seguimiento",title:"Tablet con laptop asignada",cuando:"Cuando se solicita reparar una tablet, pero se verifica que el estudiante actualmente tiene una laptop registrada como equipo asignado.",nota:`Buen dia.
+
+En seguimiento al ticket, segun lo informado por la Sede de Enlaces, se verifico que el estudiante/la estudiante [NOMBRE] cuenta actualmente con una laptop registrada como equipo asignado, entregada el [FECHA].
+
+De acuerdo con los lineamientos de atencion informados por la Sede de Enlaces, al contar actualmente con una laptop asignada, el soporte corresponde al equipo registrado actual, por lo que la reparacion de la tablet indicada en la solicitud no aplica.
+
+Por lo anterior, se procede con el cierre del presente ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"REP-10",cat:"Reparacion Y Seguimiento",title:"Equipo registrado - orientar a Sede",cuando:"Cuando el estudiante ya tiene un equipo registrado y se debe orientar al responsable para que presente ese equipo en la Sede de Enlaces.",nota:`Buen dia.
+
+Se verifica en el sistema y se observa que el equipo registrado para el estudiante corresponde a una laptop [MARCA/MODELO], entregada el [FECHA], cuando se encontraba cursando [GRADO].
+
+Por lo anterior, se solicita amablemente su apoyo para indicarle al responsable que, si la laptop presenta algun inconveniente, puede acercarse a la Sede de Enlaces con el equipo.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESC-01",cat:"Escalamientos Y Gestion",title:"Envio a Sede de Enlaces",cuando:"Cuando el caso debe ser trasladado a Tecnologia Hardware Sede para su revision y seguimiento.",nota:`Buen dia.
+
+Se informa que el caso ha sido trasladado al area correspondiente (TECNOLOGIA HARDWARE SEDE) para su revision y seguimiento.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESC-02",cat:"Escalamientos Y Gestion",title:"Ticket madre a Sede",cuando:"Cuando existe un ticket madre que debe enviarse a sede y, paralelamente, se estan creando tickets individuales para los estudiantes.",nota:`Buen dia.
+
+Se ha escalado el caso a Tecnologia Hardware Sede para la revision correspondiente del equipo.
+
+Asimismo, de manera simultanea, se estan creando los tickets individuales correspondientes a cada estudiante.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESC-03",cat:"Escalamientos Y Gestion",title:"Escalamiento general",cuando:"Cuando el ticket requiere ser enviado a otra area para su revision y gestion correspondiente.",nota:`Buen dia.
+
+Se escala el ticket al area correspondiente para su debida revision y gestion.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESC-04",cat:"Escalamientos Y Gestion",title:"Vinculacion a ticket madre",cuando:"Cuando el caso debe quedar vinculado a un ticket madre para mantener centralizado el seguimiento.",nota:`Buen dia.
+
+Se informa que el presente caso esta vinculado al Ticket #[TICKET MADRE] para su seguimiento y gestion.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESC-05",cat:"Escalamientos Y Gestion",title:"Creacion de tickets individuales",cuando:"Cuando se necesita solicitar la creacion de tickets individuales para dar seguimiento independiente a cada estudiante.",nota:`Buen dia.
+
+Se solicita amablemente su apoyo para crear los tickets individuales correspondientes, a fin de contar con un seguimiento independiente para cada estudiante.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CER-01",cat:"Cierres",title:"Cierre de ticket madre",cuando:"Cuando se han creado los tickets individuales de los estudiantes y corresponde cerrar el ticket madre.",nota:`Buen dia.
+
+Se informa que se realizo la creacion de un ticket individual para cada estudiante reportado, con el fin de brindar el seguimiento correspondiente a cada caso.
+
+Por lo anterior, se procede al cierre del presente ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CER-02",cat:"Cierres",title:"Cierre por antiguedad",cuando:"Cuando el ticket presenta una antiguedad considerable y no ha tenido continuidad.",nota:`Buen dia.
+
+Se procede a cambiar el estado del ticket a Cerrado / No Contactado, debido a la antiguedad del caso y al tiempo transcurrido desde su registro.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CER-03",cat:"Cierres",title:"Cierre por antiguedad - equipo en reparacion",cuando:"Cuando el ticket es antiguo, pero el equipo continua en proceso de reparacion.",nota:`Buen dia.
+
+Se procede con el cierre del presente ticket debido a la antiguedad del caso. Se informa que el equipo continua en proceso de reparacion y, una vez finalizada la gestion correspondiente, se podra reabrir el ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CER-04",cat:"Cierres",title:"Cierre por antiguedad - pendiente de entrega",cuando:"Cuando el ticket es antiguo, el equipo continua en reparacion y todavia esta pendiente de entrega.",nota:`Buen dia.
+
+Se procede con el cierre del presente ticket debido a su antiguedad. Asimismo, se informa que el equipo continua en proceso de reparacion, por lo que aun se encuentra pendiente de entrega.
+
+Una vez que el equipo se encuentre reparado en sede y el responsable o docente se presente a retirarlo, se podra reabrir el ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CER-05",cat:"Cierres",title:"Cierre por duplicidad",cuando:"Cuando el ticket corresponde a un caso duplicado y el seguimiento continuara mediante otro ticket.",nota:`Buen dia.
+
+Se informa que el presente ticket se cancela debido a que corresponde a un caso duplicado. El seguimiento y la gestion del incidente continuaran a traves del Ticket #[TICKET VINCULADO].
+
+Enlace del ticket vinculado:
+[PEGAR ENLACE]
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CER-06",cat:"Cierres",title:"Solicitud entregado / cierre",cuando:"Cuando la solicitud de equipo ya fue resuelta y se cuenta con autorizacion para proceder con el cierre.",nota:`Buen dia.
+
+Dando seguimiento al ticket, se observa que la solicitud ya fue resuelta en fecha [FECHA].
+
+Por lo anterior, se procede con el cierre del presente ticket.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESP-01",cat:"Casos Especiales",title:"Extravio o robo",cuando:"Cuando se reporta el extravio o robo de un equipo y es necesario solicitar la documentacion correspondiente.",nota:`Buen dia.
+
+Solicitamos amablemente su apoyo para indicarle al usuario que debera presentar la documentacion correspondiente que respalde el extravio o robo del equipo.
+
+Posteriormente, debera presentar la documentacion en las Sedes de Enlaces para gestionar el tramite de soporte.
+
+Asimismo, agradeceremos consultar la fecha en que podria presentarse en sede.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESP-02",cat:"Casos Especiales",title:"Solicitud de informacion adicional",cuando:"Cuando falta informacion necesaria del estudiante para poder realizar el seguimiento correspondiente.",nota:`Buen dia.
+
+Se solicita mayor informacion sobre el estudiante para poder brindar el seguimiento correspondiente al caso. Favor compartir los siguientes datos:
+
+Telefono del responsable
+Nombre del estudiante
+NIE/NIP
+
+Quedamos atentos a la informacion solicitada.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESP-03",cat:"Casos Especiales",title:"Acceso mediante cuenta institucional",cuando:"Cuando el usuario presenta inconvenientes para ingresar a una computadora y debe utilizar su cuenta institucional @clases.edu.sv.",nota:`Buen dia.
+
+Se solicita amablemente su apoyo para indicarle al responsable que, para ingresar a la computadora, debera iniciar sesion utilizando su cuenta institucional @clases.edu.sv.
+
+De antemano, muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"ESP-04",cat:"Casos Especiales",title:"Orientacion para uso de cuenta institucional",cuando:"Cuando el estudiante necesita orientacion presencial para utilizar el equipo informatico con su cuenta institucional.",nota:`Buen dia.
+
+Solicitamos de la manera mas atenta su apoyo con este caso.
+
+Favor indicarle al estudiante que se acerque a la sede para que se le explique la manera de utilizar el equipo informatico con la cuenta institucional @clases.edu.sv.
+
+Muchas gracias.
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`},
+{code:"CTL-01",cat:"Reportes Y Control",title:"Reporte de bandeja de Hardware",cuando:"Cuando se necesita registrar y comunicar el estado o cantidad de casos que se encuentran en las bandejas de Hardware.",nota:`REPORTE DE BANDEJA DE HARDWARE
+
+HN1 [FECHA]: [CANTIDAD]
+TEC HW SIN SEDE: [CANTIDAD]
+TECNOLOGIA HARDWARE N1: [CANTIDAD]
+HARDWARE: [CANTIDAD]
+
+Fecha de actualizacion: [FECHA]
+Responsable: [NOMBRE DEL GESTOR] / Equipo de Operaciones Tecnicas
+[NOMBRE DEL GESTOR]
+Gerencia de Soporte Operacional`}
+];
+let TEMPLATES=[];
+let CATEGORIES=[...DEFAULT_CATEGORIES];
+let editingCode=null,activeCat="Todas",globalGestor="",globalGerencia="Gerencia de Soporte Operacional",isAdmin=false;
+const FAVORITES_KEY="plantillas-favoritos-v1";
+let FAVORITES=loadFavoriteCodes();
+function loadFavoriteCodes(){try{const saved=JSON.parse(localStorage.getItem(FAVORITES_KEY)||"[]");return Array.isArray(saved)?saved.map(String):[];}catch(e){return [];}}
+function saveFavoriteCodes(){try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(FAVORITES));}catch(e){showToast("No se pudieron guardar los favoritos en este navegador.","warning");}}
+function toggleFavorite(code){const index=FAVORITES.indexOf(String(code));if(index>=0){FAVORITES.splice(index,1);showToast("Plantilla quitada de Favoritos.","info");}else{FAVORITES.push(String(code));showToast("Plantilla agregada a Favoritos ⭐","success");}saveFavoriteCodes();renderCats();render();}
+const grid=document.getElementById('grid'),catsDiv=document.getElementById('cats'),search=document.getElementById('search'),globalInput=document.getElementById('globalGestor');
+let pendingServerCalls=0, loadingTimer=null;
+function loadingTextFor(method){const messages={getTemplates:'Cargando plantillas…',getCategories:'Cargando categorías…',getGerencia:'Cargando configuración…',createAdminSession:'Verificando acceso…',saveTemplate:'Guardando plantilla…',deleteTemplate:'Eliminando plantilla…',saveGerencia:'Actualizando firma de gerencia…',renameCategory:'Actualizando categoría…',saveCategory:'Guardando categoría…',deleteCategory:'Eliminando categoría…',generateTemplateCode:'Preparando código…'};return messages[method]||'Procesando solicitud…';}
+function beginLoading(message){pendingServerCalls++;document.getElementById('loadingMessage').textContent=message;clearTimeout(loadingTimer);loadingTimer=setTimeout(()=>{if(pendingServerCalls>0)document.getElementById('loadingOverlay').classList.add('active');},180);}
+function endLoading(){pendingServerCalls=Math.max(0,pendingServerCalls-1);if(pendingServerCalls===0){clearTimeout(loadingTimer);document.getElementById('loadingOverlay').classList.remove('active');}}
+function serverCall(method,...args){beginLoading(loadingTextFor(method));return new Promise((resolve,reject)=>{google.script.run.withSuccessHandler(result=>{endLoading();resolve(result);}).withFailureHandler(err=>{endLoading();reject(err);})[method](...args);});}
+function saveToStorage(){return Promise.resolve();}
+async function loadTemplates(){try{TEMPLATES=await serverCall('getTemplates',DEFAULT_TEMPLATES);CATEGORIES=await serverCall('getCategories',DEFAULT_CATEGORIES);try{globalGerencia=await serverCall('getGerencia');}catch(err){}renderCats();render();refreshCategorySelect();}catch(e){showToast('Error cargando plantillas: '+(e.message||e),'error');}}
+function updateAuthUI(){document.body.classList.toggle('is-admin',isAdmin);document.getElementById('adminBadge').classList.toggle('active',isAdmin);document.getElementById('btnNew').style.display=isAdmin?'inline-block':'none';document.getElementById('btnCats').style.display=isAdmin?'inline-block':'none';document.getElementById('btnSignature').style.display=isAdmin?'inline-block':'none';document.getElementById('exportBar').style.display=isAdmin?'flex':'none';document.getElementById('btnLogin').style.display=isAdmin?'none':'inline-block';document.getElementById('btnLogout').style.display=isAdmin?'inline-block':'none';document.getElementById('adminUser').style.display=isAdmin?'none':'inline-block';document.getElementById('adminPass').style.display=isAdmin?'none':'inline-block';}
+let adminToken=''; async function login(){const u=document.getElementById('adminUser').value.trim();const p=document.getElementById('adminPass').value;try{const result=await serverCall('createAdminSession',u,p);if(result&&result.ok){adminToken=result.token;isAdmin=true;updateAuthUI();renderCats();render();showToast('Admin activado ✓');}else{showToast('Credenciales incorrectas. Verifica el usuario y la contraseña.','error');}}catch(e){showToast('No se pudo iniciar sesión: '+(e.message||e),'error');}}
+function logout(){
+  adminToken = '';
+  isAdmin = false;
+
+  // Limpiar la contraseña al salir
+  document.getElementById('adminPass').value = '';
+
+  updateAuthUI();
+  renderCats();
+  render();
+
+  showToast('Modo consulta');
+}
+
+function renderCats(){const cats=[...new Set([...CATEGORIES,...TEMPLATES.map(t=>t.cat)].filter(Boolean))];const favoriteCount=TEMPLATES.filter(t=>FAVORITES.includes(String(t.code))).length;catsDiv.innerHTML=`<button class="cat-btn ${activeCat==='Todas'?'active':''}" data-cat="Todas">Todas (${TEMPLATES.length})</button><button class="cat-btn ${activeCat==='Favoritos'?'active':''}" data-cat="Favoritos">⭐ Favoritos (${favoriteCount})</button>`+cats.map(c=>`<button class="cat-btn ${activeCat===c?'active':''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');catsDiv.querySelectorAll('.cat-btn').forEach(b=>b.onclick=()=>{activeCat=b.dataset.cat;renderCats();render();});}
+function escapeHtml(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function formatNoteWithBold(raw){
+  let lines = raw.split('\n');
+  while(lines.length>0 && lines[lines.length-1].trim()==='') lines.pop();
+  if(lines.length>=3){
+    const n=lines.length;
+    lines[n-2]='<b>'+escapeHtml(lines[n-2])+'</b>';
+    lines[n-1]='<b>'+escapeHtml(lines[n-1])+'</b>';
+    for(let i=0;i<n-2;i++){ lines[i]=escapeHtml(lines[i]); }
+    return lines.join('<br>');
+  }
+  return escapeHtml(raw).replace(/\n/g,'<br>');
+}
+function render(){
+  const q=search.value.toLowerCase();
+  let list=TEMPLATES.filter(t=>{const mc=activeCat==="Todas"||(activeCat==="Favoritos"?FAVORITES.includes(String(t.code)):t.cat===activeCat);const mq=!q||(t.code+t.title+t.cuando+t.nota).toLowerCase().includes(q);return mc&&mq;});
+  document.getElementById('count').textContent=list.length+" plantillas";
+  grid.innerHTML=list.map(t=>{
+    const placeholders=(t.nota.match(/\[.*?\]/g)||[]).filter((v,i,a)=>a.indexOf(v)===i);
+    const otherPlaceholders=placeholders.filter(p=>!p.toUpperCase().includes('GESTOR'));
+    const fieldsHtml=otherPlaceholders.length?`<div class="fields">${otherPlaceholders.map(ph=>`<input class="f-input" data-code="${t.code}" data-field="${ph}" placeholder="${ph}">`).join('')}</div>`:'';
+    let displayNotaRaw = t.nota.split('Gerencia de Soporte Operacional').join(globalGerencia);if(globalGestor) displayNotaRaw=displayNotaRaw.replace(/\[NOMBRE DEL GESTOR\]/gi,globalGestor);
+    const displayNotaHtml = formatNoteWithBold(displayNotaRaw);
+    const adminBtns=isAdmin?`<button class="btn btn-warning" onclick="editTemplate('${t.code}')">Editar</button><button class="btn btn-danger" onclick="deleteTemplate('${t.code}')">Eliminar</button>`:'';
+    const favoriteBtn=`<button type="button" class="favorite-btn ${FAVORITES.includes(String(t.code))?'active':''}" onclick="toggleFavorite('${t.code}')" aria-label="${FAVORITES.includes(String(t.code))?'Quitar de Favoritos':'Agregar a Favoritos'}" aria-pressed="${FAVORITES.includes(String(t.code))}">${FAVORITES.includes(String(t.code))?'★':'☆'}</button>`;
+    return `<div class="card" data-code="${t.code}">${favoriteBtn}<span class="badge">${t.code} - ${t.cat}</span><h3>${t.title}</h3><div class="cuando"><div class="cuando-title">📌 CUANDO UTILIZAR</div><div class="cuando-text">${t.cuando}</div></div>${fieldsHtml}<div class="note" id="note-${t.code}" data-plain="${encodeURIComponent(displayNotaRaw)}">${displayNotaHtml}</div><div class="actions"><button class="btn btn-primary" onclick="copyCard('${t.code}')" style="flex:${isAdmin?1:2}">📋 Copiar</button>${adminBtns}</div></div>`;
+  }).join('');
+  grid.querySelectorAll('.f-input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const code=inp.dataset.code;
+      const tmpl=TEMPLATES.find(x=>x.code===code);
+      let text=tmpl.nota.split('Gerencia de Soporte Operacional').join(globalGerencia);
+      if(globalGestor) text=text.replace(/\[NOMBRE DEL GESTOR\]/gi,globalGestor);
+      grid.querySelectorAll(`.f-input[data-code="${code}"]`).forEach(i=>{
+        const val=i.value.trim()||i.getAttribute('placeholder');
+        text=text.split(i.dataset.field).join(val);
+      });
+      const noteEl=document.getElementById('note-'+code);
+      noteEl.innerHTML=formatNoteWithBold(text);
+      noteEl.dataset.plain=encodeURIComponent(text);
+    });
+  });
+}
+async function copyCard(code){
+  const el=document.getElementById('note-'+code);
+  const plain=decodeURIComponent(el.dataset.plain);
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(plain);
+    }else{
+      const temp=document.createElement('textarea');temp.value=plain;temp.style.position='fixed';temp.style.opacity='0';document.body.appendChild(temp);temp.select();const ok=document.execCommand('copy');temp.remove();if(!ok)throw new Error('El navegador no permitió copiar el texto.');
+    }
+    showToast('Nota copiada al portapapeles.','success');
+  }catch(e){showToast('No se pudo copiar. Revisa los permisos del navegador e inténtalo de nuevo.','error');}
+}
+let toastTimer=null;
+function showToast(message,type){
+  const toast=document.getElementById('toast');
+  const messageEl=document.getElementById('toastMessage');
+  const iconEl=document.getElementById('toastIcon');
+  const text=String(message??'');
+  let kind=type;
+  if(!kind){
+    if(/error|no se pudo|incorrect|fall[oó]|no autorizado|no se puede/i.test(text)) kind='error';
+    else if(/no puede|debes|escribe|selecciona|vac[ií]o|advertencia/i.test(text)) kind='warning';
+    else if(/copiado|guardad|actualizad|agregad|eliminad|activado|correctamente|modo consulta|firma actualizada/i.test(text)) kind='success';
+    else kind='info';
+  }
+  const icons={success:'✓',error:'!',warning:'⚠',info:'ℹ'};
+  toast.className='toast '+kind;
+  messageEl.textContent=text;
+  iconEl.textContent=icons[kind]||icons.info;
+  toast.setAttribute('role',kind==='error'?'alert':'status');
+  toast.setAttribute('aria-live',kind==='error'?'assertive':'polite');
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),3600);
+}
+async function openModal(code=null){if(!isAdmin){showToast('Debes ingresar como administrador.','warning');return;}editingCode=code;await refreshCategorySelect();document.getElementById('modal').classList.add('active');if(code){const t=TEMPLATES.find(x=>x.code===code);if(!t)return;document.getElementById('mCode').value=t.code;document.getElementById('mTitle').value=t.title;document.getElementById('mCuando').value=t.cuando;document.getElementById('mNota').value=t.nota.split('Gerencia de Soporte Operacional').join(globalGerencia);document.getElementById('mCat').value=t.cat;document.getElementById('mCode').readOnly=true;document.getElementById('modalTitle').textContent='Editar '+code;}else{document.getElementById('mCode').value='Generando...';document.getElementById('mCode').readOnly=true;document.getElementById('mTitle').value='';document.getElementById('mCuando').value='';document.getElementById('mNota').value='Buen día.\n\n...\n\nMuchas gracias.\n[NOMBRE DEL GESTOR]\n'+globalGerencia;document.getElementById('modalTitle').textContent='Nueva Plantilla';await refreshAutoCode();}}
+function closeModal(){document.getElementById('modal').classList.remove('active');editingCode=null;}
+async function refreshCategorySelect(){const sel=document.getElementById('mCat');const current=sel.value;sel.innerHTML=CATEGORIES.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');if(CATEGORIES.includes(current))sel.value=current;if(!sel.value&&CATEGORIES.length)sel.value=CATEGORIES[0];}
+async function refreshAutoCode(){if(editingCode)return;const cat=document.getElementById('mCat').value;if(!cat)return;try{document.getElementById('mCode').value=await serverCall('generateTemplateCode',cat,adminToken);}catch(e){document.getElementById('mCode').value='Automático';}}
+async function saveModal(){if(!isAdmin){showToast('No tienes autorización para realizar esta acción.','error');return;}const code=editingCode?document.getElementById('mCode').value.trim().toUpperCase():'';const cat=document.getElementById('mCat').value;const title=document.getElementById('mTitle').value.trim();const cuando=document.getElementById('mCuando').value.trim();const nota=document.getElementById('mNota').value.trim();if(!cat||!title||!nota){showToast('Selecciona una categoría e ingresa el título y la nota.','warning');return;}try{await serverCall('saveTemplate',{code,cat,title,cuando,nota},editingCode,adminToken);await loadTemplates();closeModal();showToast('Guardado ✓');}catch(e){showToast('No se pudo guardar: '+(e.message||e),'error');}}
+async function editGerencia(){if(!isAdmin){showToast('Debes ingresar como administrador.','warning');return;}try{const actual=await serverCall('getGerencia');const answer=prompt('Nombre que aparecerá al final de todas las notas:',actual||globalGerencia);if(answer===null)return;const nuevo=answer.trim();if(!nuevo){showToast('El nombre de la gerencia no puede quedar vacío.','warning');return;}const result=await serverCall('saveGerencia',nuevo,adminToken);globalGerencia=result.nombre||nuevo;render();showToast('Firma actualizada en todas las notas ✓');}catch(e){showToast('No se pudo actualizar la firma: '+(e.message||e),'error');}}
+function openCategoryManager(){if(!isAdmin)return;document.getElementById('categoryModal').classList.add('active');renderCategoryManager();}
+function closeCategoryManager(){document.getElementById('categoryModal').classList.remove('active');document.getElementById('newCategoryName').value='';}
+function renderCategoryManager(){const el=document.getElementById('categoryList');el.innerHTML=CATEGORIES.map(c=>{const n=TEMPLATES.filter(t=>t.cat===c).length;const encoded=encodeURIComponent(c);return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #e2e8f0;border-radius:8px;padding:9px;margin:6px 0"><span style="flex:1;min-width:0;overflow-wrap:anywhere">${escapeHtml(c)} <small style="color:#64748b">(${n} plantillas)</small></span><div style="display:flex;gap:6px;flex:0 0 auto"><button class="btn" onclick="editCategory(decodeURIComponent('${encoded}'))">✏️ Editar</button><button class="btn btn-danger" style="flex:0 0 auto" ${n?'disabled title="Primero cambia o elimina las plantillas de esta categoría"':''} onclick="removeCategory(decodeURIComponent('${encoded}'))">Eliminar</button></div></div>`;}).join('')||'<p>No hay categorías.</p>';el.querySelectorAll('button:disabled').forEach(b=>{b.style.opacity='.5';b.style.cursor='not-allowed';});}
+async function editCategory(oldName){if(!isAdmin)return;const answer=prompt('Escribe el nuevo nombre para la categoría:',oldName);if(answer===null)return;const newName=answer.trim().replace(/\s+/g,' ');if(!newName){showToast('El nombre no puede quedar vacío.','warning');return;}if(newName===oldName){return;}try{CATEGORIES=await serverCall('renameCategory',oldName,newName,adminToken);if(activeCat===oldName)activeCat=newName;await loadTemplates();renderCategoryManager();showToast('Categoría actualizada ✓');}catch(e){showToast('No se pudo editar la categoría: '+(e.message||e),'error');}}
+async function addCategory(){if(!isAdmin)return;const name=document.getElementById('newCategoryName').value.trim();if(!name){showToast('Escribe el nombre de la categoría.','warning');return;}try{CATEGORIES=await serverCall('saveCategory',name,adminToken);document.getElementById('newCategoryName').value='';renderCategoryManager();renderCats();refreshCategorySelect();showToast('Categoría agregada ✓');}catch(e){showToast('No se pudo agregar la categoría: '+(e.message||e),'error');}}
+async function removeCategory(name){if(!isAdmin)return;if(TEMPLATES.some(t=>t.cat===name)){showToast('No se puede eliminar: primero cambia las plantillas asociadas a otra categoría.','warning');return;}if(!confirm('¿Eliminar la categoría «'+name+'»?'))return;try{CATEGORIES=await serverCall('deleteCategory',name,adminToken);if(activeCat===name)activeCat='Todas';renderCategoryManager();renderCats();await refreshCategorySelect();showToast('Categoría eliminada');}catch(e){showToast('No se pudo eliminar: '+(e.message||e),'error');}}
+function editTemplate(c){if(!isAdmin)return;openModal(c);}
+async function deleteTemplate(c){if(!isAdmin)return;if(!confirm('¿Eliminar '+c+'?'))return;try{await serverCall('deleteTemplate',c,adminToken);await loadTemplates();showToast('Eliminado');}catch(e){showToast('No se pudo eliminar: '+(e.message||e),'error');}}
+document.getElementById('globalGestor').addEventListener('input',e=>{globalGestor=e.target.value;render();});
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+document.getElementById('categoryModal').addEventListener('click',e=>{if(e.target.id==='categoryModal')closeCategoryManager();});
+document.getElementById('adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+
+function applyTheme(theme){
+  const dark=theme==='dark';
+  document.body.classList.toggle('dark-mode',dark);
+  const btn=document.getElementById('themeToggle');
+  if(btn){btn.textContent=dark?'☀️ Modo claro':'🌙 Modo oscuro';btn.setAttribute('aria-label',dark?'Activar modo claro':'Activar modo oscuro');btn.setAttribute('aria-pressed',String(dark));btn.style.background=dark?'#fbbf24':'#334155';btn.style.color=dark?'#422006':'#fff';}
+}
+function exportEscape(value){return escapeHtml(String(value==null?'':value)).replace(/\r?\n/g,'<br>');}
+function getExportDocumentHtml(){
+  const all=[...TEMPLATES].sort((a,b)=>String(a.cat||'Sin categoría').localeCompare(String(b.cat||'Sin categoría'),'es',{sensitivity:'base'})||String(a.code||'').localeCompare(String(b.code||''),'es',{numeric:true}));
+  const cats=[...new Set([...CATEGORIES,...all.map(t=>t.cat)].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es',{sensitivity:'base'}));
+  const now=new Date();
+  const date=now.toLocaleDateString('es-SV',{year:'numeric',month:'long',day:'numeric'});
+  const sections=cats.map(cat=>{
+    const items=all.filter(t=>t.cat===cat);
+    if(!items.length)return '';
+    return `<section class="category"><h2>${exportEscape(cat)}</h2>${items.map(t=>{
+      let note=String(t.nota||'').split('Gerencia de Soporte Operacional').join(globalGerencia||'Gerencia de Soporte Operacional');
+      if(globalGestor)note=note.replace(/\[NOMBRE DEL GESTOR\]/gi,globalGestor);
+      return `<article class="template"><div class="template-head"><span class="code">${exportEscape(t.code)}</span><h3>${exportEscape(t.title)}</h3></div>${t.cuando?`<div class="when"><strong>CUÁNDO UTILIZAR</strong><p>${exportEscape(t.cuando)}</p></div>`:''}<div class="note"><strong>PLANTILLA / NOTA</strong><p>${exportEscape(note)}</p></div></article>`;
+    }).join('')}</section>`;
+  }).join('');
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Plantillas de Gestión de Tickets</title><style>
+  @page{size:A4;margin:18mm 16mm 20mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#1e293b;font-size:10.5pt;line-height:1.55;margin:0} .cover{padding:26px 28px;margin-bottom:28px;border-left:7px solid #2563eb;background:#f1f5f9} .eyebrow{font-size:9pt;font-weight:bold;letter-spacing:2px;color:#2563eb;text-transform:uppercase}h1{font-size:25pt;line-height:1.2;margin:10px 0;color:#0f172a} .subtitle{font-size:12pt;color:#475569;margin:0 0 18px}.meta{border-top:1px solid #cbd5e1;padding-top:12px;font-size:9pt;color:#64748b}.category{page-break-before:auto;margin-top:24px}.category>h2{font-size:17pt;color:#1d4ed8;border-bottom:2px solid #2563eb;padding-bottom:7px;margin:0 0 14px;page-break-after:avoid}.template{border:1px solid #dbe3ee;border-radius:6px;padding:13px 15px;margin:0 0 14px;page-break-inside:avoid}.template-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:8px}.code{display:inline-block;background:#eaf1ff;color:#1d4ed8;font-size:8.5pt;font-weight:bold;border-radius:4px;padding:3px 7px;white-space:nowrap}h3{font-size:12pt;color:#0f172a;margin:1px 0 0}.when{background:#fff8e7;border-left:3px solid #f59e0b;padding:8px 10px;margin:9px 0}.when strong,.note strong{font-size:8pt;letter-spacing:.6px;color:#475569}.when p,.note p{margin:4px 0 0;white-space:normal;overflow-wrap:anywhere}.note{background:#f8fafc;padding:9px 10px;border-radius:4px}.note p{white-space:pre-wrap}.footer{margin-top:25px;border-top:1px solid #cbd5e1;padding-top:8px;color:#64748b;font-size:8pt;text-align:center} @media print{.category{break-inside:auto}.template{break-inside:avoid}}
+  </style></head><body><div class="cover"><div class="eyebrow">Gestión operativa · Biblioteca institucional</div><h1>Plantillas de Gestión de Tickets</h1><p class="subtitle">Biblioteca de respuestas y seguimiento de solicitudes</p><div class="meta">Documento de referencia interna<br>Generado el ${exportEscape(date)} · ${all.length} plantillas · ${cats.length} categorías</div></div>${sections||'<p>No hay plantillas registradas para exportar.</p>'}<div class="footer">Plantillas de Gestión de Tickets · Documento de uso interno</div></body></html>`;
+}
+function exportAllToWord(){
+  if(!isAdmin){showToast('Esta función está disponible solo para administradores.','error');return;}
+  try{
+    const html=getExportDocumentHtml();
+    const blob=new Blob(['\ufeff',html],{type:'application/msword;charset=utf-8'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');
+    a.href=url;a.download='Plantillas_Gestion_de_Tickets.doc';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+    showToast('Documento Word generado ✓');
+  }catch(e){showToast('No se pudo generar Word: '+(e.message||e),'error');}
+}
+
+async function exportAllToPDF() {
+  if (!isAdmin) {
+    showToast('Esta función está disponible solo para administradores.', 'error');
+    return;
+  }
+
+  if (typeof html2pdf === 'undefined') {
+    showToast('No se pudo cargar la biblioteca para generar el PDF.', 'error');
+    return;
+  }
+
+  try {
+    showToast('Generando PDF, espera un momento...');
+
+    const html = getExportDocumentHtml();
+    const container = document.createElement('div');
+
+    container.innerHTML = html;
+
+    const contenido = container.querySelector('body') || container;
+    const opciones = {
+      margin: 10,
+      filename: 'Plantillas_Gestion_de_Tickets.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    await html2pdf().set(opciones).from(contenido).save();
+
+    showToast('PDF descargado correctamente.', 'success');
+  } catch (e) {
+    showToast('No se pudo generar el PDF: ' + (e.message || e), 'error');
+  }
+}
+
+
+function toggleTheme(){
+  const next=document.body.classList.contains('dark-mode')?'light':'dark';
+  try{localStorage.setItem('plantillas-theme',next);}catch(e){}
+  applyTheme(next);
+}
+(function initTheme(){
+  let saved='light';
+  try{saved=localStorage.getItem('plantillas-theme')||'light';}catch(e){}
+  applyTheme(saved);
+})();
+
+updateAuthUI();loadTemplates();
+</script></body></html>
